@@ -3,4 +3,4 @@
 	url = git@github.com:sarnold/BPI-Mainline-uboot.git
 [submodule "kernel"]
 	path = kernel
-	url = git@github.com/sarnold/BPI-Mainline-kernel.git
+	url = git@github.com:sarnold/BPI-Mainline-kernel.git
