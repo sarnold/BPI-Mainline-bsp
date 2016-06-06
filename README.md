@@ -13,7 +13,7 @@ for making a boot.scr).
   
       `$ make`
 
-  3. Add CROSS_COMPILE=<compiler-triplet>- to the make line if your toolchain
+  3. Add CROSS_COMPILE=``<compiler-triplet>``- to the make line if your toolchain
      is not called "arm-linux-gnueabihf-", eg:
 
       `$ CROSS_COMPILE=armv7a-hardfloat-linux-gnueabi- make`
