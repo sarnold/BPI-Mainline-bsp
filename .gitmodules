@@ -1,6 +1,6 @@
 [submodule "u-boot"]
 	path = u-boot
-	url = https://github.com/BPI-SINOVOIP/BPI-Mainline-uboot.git
+	url = git@github.com:sarnold/BPI-Mainline-uboot.git
 [submodule "kernel"]
 	path = kernel
-	url = https://github.com/BPI-SINOVOIP/BPI-Mainline-kernel.git
+	url = git@github.com/sarnold/BPI-Mainline-kernel.git
