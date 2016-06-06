@@ -1,11 +1,11 @@
 .PHONY: all clean help
-.PHONY: u-boot kernel kernel-config
+.PHONY: u-boot kernel kernel-config config-first
 
 include chosen_board.mk
 
 SUDO=sudo
 
-CROSS_COMPILE=arm-linux-gnueabihf-
+CROSS_COMPILE ?= arm-linux-gnueabihf-
 OUTPUT_DIR=$(CURDIR)/output
 BUILD_PATH=$(CURDIR)/build
 U_O_PATH=$(BUILD_PATH)/$(BOARD)/$(UBOOT_CONFIG)-u-boot
@@ -13,7 +13,7 @@ K_O_PATH=$(BUILD_PATH)/$(BOARD)/$(KERNEL_CONFIG)-kernel
 U_CONFIG_H=$(U_O_PATH)/include/config.h
 K_DOT_CONFIG=$(K_O_PATH)/.config
 
-J=$(shell expr `grep ^processor /proc/cpuinfo  | wc -l` \* 2)
+J ?= $(shell expr `grep ^processor /proc/cpuinfo  | wc -l`)
 
 all: bsp
 
@@ -38,9 +38,9 @@ u-boot: $(U_CONFIG_H)
 ## linux
 $(K_DOT_CONFIG): kernel/.git
 	$(Q)mkdir -p $(K_O_PATH)
-	$(Q)$(MAKE) -C kernel O=$(K_O_PATH) ARCH=arm $(KERNEL_CONFIG)
+	$(Q)$(MAKE) -C kernel O=$(K_O_PATH) ARCH=arm CROSS_COMPILE=${CROSS_COMPILE} $(KERNEL_CONFIG)
 ifeq ($(BOARD),Bananapi_R1)
-        echo "CONFIG_SWCONFIG=y" >> $(K_O_PATH)/.config
+	echo "CONFIG_SWCONFIG=y" >> $(K_O_PATH)/.config
 endif
 
 kernel: $(K_DOT_CONFIG)
@@ -49,11 +49,14 @@ kernel: $(K_DOT_CONFIG)
 	$(Q)$(MAKE) -C kernel O=$(K_O_PATH) ARCH=arm CROSS_COMPILE=${CROSS_COMPILE} -j$J INSTALL_MOD_PATH=output modules_install
 
 kernel-config: $(K_DOT_CONFIG)
-	$(Q)$(MAKE) -C kernel O=$(K_O_PATH) ARCH=arm menuconfig
+	$(Q)$(MAKE) -C kernel O=$(K_O_PATH) ARCH=arm CROSS_COMPILE=${CROSS_COMPILE} menuconfig
 	cp $(K_DOT_CONFIG) kernel/arch/arm/configs/$(KERNEL_CONFIG)
 
 ## bsp
 bsp: u-boot kernel
+
+## bsp with config
+config-first: u-boot kernel-config kernel
 
 update:
 	$(Q)git stash
@@ -79,6 +82,7 @@ help:
 	@echo "Optional targets:"
 	@echo "  make kernel          - Builds linux kernel"
 	@echo "  make kernel-config   - Menuconfig"
+	@echo "  make config-first    - Menuconfig before kernel"
 	@echo "  make u-boot          - Builds u-boot"
 	@echo ""
 
