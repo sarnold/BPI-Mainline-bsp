@@ -1,5 +1,7 @@
 # BPI-Mainline-bsp
 
+Build prerequisites: toolchain (native or cross), dtc, bc (and u-boot-tools
+for making a boot.scr).
 
 >  **Build**
 
@@ -10,6 +12,11 @@
   2. Compile
   
       `$ make`
+
+  3. Add CROSS_COMPILE=<compiler-triplet>- to the make line if your toolchain
+     is not called "arm-linux-gnueabihf-", eg:
+
+      `$ CROSS_COMPILE=armv7a-hardfloat-linux-gnueabi- make`
 
 
 > **Boot**
